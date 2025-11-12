@@ -1,37 +1,45 @@
+# Student Management System - GitHub Ready
+
+## Included Files
+
+1. `app.py` - Main Python code (Streamlit + Google Sheets integration)
+2. `README.md` - Project description, instructions, and usage
+3. `.gitignore` - Recommended ignore file for sensitive data
+
+---
+
+## .gitignore content
+
+```
+.env
+client1.json
+token.pickle
+__pycache__/
+*.pyc
+```
+
+---
+
+## README.md (English)
+
+````markdown
 # Student Management System with Google Sheets and Streamlit
 
 ## Project Description
 
-This Python project allows you to manage student data directly via Google Sheets using a simple web interface with Streamlit.  
-You can add students, edit their data, search for them, and delete them easily without manually handling the spreadsheet.
+This Python project allows you to manage student data directly via Google Sheets using a simple web interface with Streamlit. You can add students, edit their data, search for them, and delete them easily without manually handling the spreadsheet.
 
 ---
 
 ## Main Features
 
-1. **Add a Single Student**
-   - Automatically generates an ID if not provided.
-   - Adds the student with all details in a new row.
-
-2. **Add Multiple Students (Batch)**
-   - Allows adding a list of students at once.
-   - Automatically generates IDs for each student.
-
-3. **View All Students**
-   - Displays all student data in a well-formatted table.
-
-4. **Search Student**
-   - Search for a student by ID.
-   - Displays all their details.
-
-5. **Update Student**
-   - Edit any field of a student directly from the interface.
-
-6. **Delete Student**
-   - Remove a student from the sheet using their ID.
-
-7. **Simple Web Interface (Streamlit)**
-   - Easy-to-use web interface running in the browser.
+1. Add a single student (auto-generates ID if not provided)
+2. Add multiple students (batch) at once
+3. View all students in a table
+4. Search student by ID
+5. Update student data
+6. Delete student
+7. Simple web interface using Streamlit
 
 ---
 
@@ -40,4 +48,48 @@ You can add students, edit their data, search for them, and delete them easily w
 - Python >= 3.8
 - Libraries:
 ```bash
-pip install gspread google-auth google-auth-oauthlib streamlit
+pip install gspread google-auth google-auth-oauthlib streamlit python-dotenv
+````
+
+* Google OAuth 2.0 Client ID JSON file (`client1.json`)
+
+---
+
+## Usage
+
+1. Create a `.env` file in the project folder:
+
+```
+GOOGLE_CLIENT_FILE=client1.json
+```
+
+2. Run the app:
+
+```bash
+streamlit run app.py
+```
+
+3. Use the sidebar menu to:
+
+   * Add Student
+   * Add Batch
+   * View Students
+   * Search Student
+   * Update Student
+   * Delete Student
+
+---
+
+## Notes
+
+* Sensitive files (`client1.json`, `.env`, `token.pickle`) are ignored by Git and should not be uploaded.
+* The project handles expected errors only, avoiding hidden bugs.
+* Users need their own Google OAuth file to run the project.
+
+```
+
+---
+
+This setup is **GitHub ready**, safe for public sharing while keeping API credentials secure. Users can clone the repository and run the app after adding their own `.env` and client file.
+
+```
