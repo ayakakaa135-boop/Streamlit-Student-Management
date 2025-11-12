@@ -4,6 +4,11 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 import pickle
 import os
+from dotenv import load_dotenv
+
+# ----- تحميل متغيرات البيئة -----
+load_dotenv()
+CLIENT_FILE = os.getenv("GOOGLE_CLIENT_FILE")
 
 # ----- إعداد صلاحيات Google -----
 SCOPES = [
@@ -21,8 +26,12 @@ if not creds or not creds.valid:
     if creds and creds.expired and creds.refresh_token:
         creds.refresh(Request())
     else:
-        flow = InstalledAppFlow.from_client_secrets_file("client1.json", SCOPES)
-        creds = flow.run_local_server(port=0)
+        try:
+            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_FILE, SCOPES)
+            creds = flow.run_local_server(port=0)
+        except FileNotFoundError:
+            st.error(f"Client file '{CLIENT_FILE}' not found. Check your .env settings.")
+            st.stop()
     with open("token.pickle", "wb") as token:
         pickle.dump(creds, token)
 
@@ -67,10 +76,14 @@ def add_students_batch(ws, students):
     return [r[0] for r in all_rows]
 
 def get_all_students(ws):
-    return ws.get_all_records()
+    try:
+        return ws.get_all_records()
+    except gspread.exceptions.APIError:
+        st.error("Error fetching students. Check your Google Sheets connection.")
+        return []
 
 def get_student_by_id(ws, student_id):
-    data = ws.get_all_records()
+    data = get_all_students(ws)
     for s in data:
         if str(s["ID"]) == str(student_id):
             return s
@@ -101,7 +114,12 @@ elif choice == "Add Batch":
         for line in text_input.strip().split('\n'):
             parts = line.split(',')
             if len(parts) >= 4:
-                students_list.append({"Name": parts[0].strip(), "Email": parts[1].strip(), "Grade": parts[2].strip(), "Notes": parts[3].strip()})
+                students_list.append({
+                    "Name": parts[0].strip(),
+                    "Email": parts[1].strip(),
+                    "Grade": parts[2].strip(),
+                    "Notes": parts[3].strip()
+                })
         added_ids = add_students_batch(ws, students_list)
         st.success(f"Added {len(added_ids)} students successfully!")
 
